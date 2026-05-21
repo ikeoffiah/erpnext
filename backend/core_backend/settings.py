@@ -2,12 +2,9 @@ import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-default-key')
-
 DEBUG = True
-
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -23,11 +20,9 @@ INSTALLED_APPS = [
     'bulk_transaction',
     'buying',
     'communication',
-    'controllers',
     'crm',
-    'desktop_icon',
-    'domains',
     'edi',
+    'erp_core',
     'erpnext_integrations',
     'maintenance',
     'manufacturing',
@@ -35,15 +30,14 @@ INSTALLED_APPS = [
     'projects',
     'quality_management',
     'regional',
-    'report_center',
     'selling',
     'setup',
     'shopping_cart',
     'stock',
+    'subcontracting',
     'support',
     'telephony',
-    'utilities',
-]
+    'utilities',]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -56,7 +50,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'core_backend.urls'
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -74,7 +67,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'core_backend.wsgi.application'
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -82,26 +74,19 @@ DATABASES = {
     }
 }
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
-
 STATIC_URL = 'static/'
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny', # Set to IsAuthenticated for production
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+}
