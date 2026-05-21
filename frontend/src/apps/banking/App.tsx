@@ -1,3 +1,4 @@
+import { frappe } from '@/core/frappe_compatibility';
 import { useEffect } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Toaster } from '@/components/ui/sonner'
