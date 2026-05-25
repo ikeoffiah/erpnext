@@ -2,6 +2,11 @@ from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
 
+# Additional imports
+from django.db.models import FileField
+from django.conf import settings
+from django.core.exceptions import ValidationError
+
 class BaseDocument(models.Model):
     name = models.CharField(max_length=255, primary_key=True)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="%(class)s_owner")
@@ -20,11 +25,13 @@ class Currency(BaseDocument):
 class Country(BaseDocument):
     pass
 
-class AccountCategory(BaseDocument):
-    pass
+class Account(BaseDocument):
+    name = models.CharField(max_length=255, unique=True, verbose_name='Account')
+    # Placeholder for account details
 
 class FinanceBook(BaseDocument):
-    pass
+    name = models.CharField(max_length=255, unique=True, verbose_name='Finance Book')
+    # Additional fields can be added as needed
 
 class LetterHead(BaseDocument):
     pass
@@ -36,114 +43,41 @@ class Warehouse(BaseDocument):
     pass
 
 class CostCenter(BaseDocument):
-    pass
+    name = models.CharField(max_length=255, unique=True, verbose_name='Cost Center')
+    # Placeholder
 
 class PaymentTermsTemplate(BaseDocument):
-    pass
+    name = models.CharField(max_length=255, unique=True, verbose_name='Payment Terms Template')
+    # Placeholder
 
 class Role(BaseDocument):
-    pass
+    name = models.CharField(max_length=255, unique=True, verbose_name='Role')
+    # Placeholder
 
 class Contact(BaseDocument):
-    pass
+    name = models.CharField(max_length=255, unique=True, verbose_name='Contact')
+    # Placeholder
 
 class TermsAndConditions(BaseDocument):
-    pass
+    name = models.CharField(max_length=255, unique=True, verbose_name='Terms and Conditions')
+    # Placeholder
 
 class Company(BaseDocument):
-    company_name = models.CharField(max_length=255, blank=True, null=True, verbose_name='Company')
-    abbr = models.CharField(max_length=255, blank=True, null=True, verbose_name='Abbr')
+    name = models.CharField(max_length=255, blank=True, null=True, verbose_name='Company')
+    abbr = models.CharField(max_length=255, blank=True, null=True, verbose_name='Abbreviation')
     is_group = models.BooleanField(default=False, verbose_name='Is Group')
-    default_finance_book = models.ForeignKey('Finance Book', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Finance Book')
-    domain = models.CharField(max_length=255, blank=True, null=True, verbose_name='Domain')
-    parent_company = models.ForeignKey('Company', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Parent Company')
-    company_logo = models.ImageField(upload_to='uploads/', blank=True, null=True, verbose_name='Company Logo')
-    company_description = models.TextField(blank=True, null=True, verbose_name='Company Description')
-    sales_monthly_history = models.TextField(blank=True, null=True, verbose_name='Sales Monthly History')
-    transactions_annual_history = models.TextField(blank=True, null=True, verbose_name='Transactions Annual History')
-    monthly_sales_target = models.DecimalField(max_digits=18, decimal_places=6, default=0.0, verbose_name='Monthly Sales Target')
-    total_monthly_sales = models.DecimalField(max_digits=18, decimal_places=6, default=0.0, verbose_name='Total Monthly Sales')
-    default_currency = models.ForeignKey('Currency', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Currency')
-    default_letter_head = models.ForeignKey('Letter Head', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Letter Head')
-    default_holiday_list = models.ForeignKey('Holiday List', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Holiday List')
-    default_warehouse_for_sales_return = models.ForeignKey('Warehouse', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Warehouse for Sales Return')
-    country = models.ForeignKey('Country', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Country')
-    create_chart_of_accounts_based_on = models.CharField(max_length=255, choices=[('Standard Template', 'Standard Template'), ('Existing Company', 'Existing Company')], blank=True, null=True, verbose_name='Create Chart Of Accounts Based On')
-    chart_of_accounts = models.CharField(max_length=255, choices=[], blank=True, null=True, verbose_name='Chart Of Accounts Template')
-    existing_company = models.ForeignKey('Company', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Existing Company ')
-    tax_id = models.CharField(max_length=255, blank=True, null=True, verbose_name='Tax ID')
-    date_of_establishment = models.DateField(blank=True, null=True, verbose_name='Date of Establishment')
-    default_bank_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Bank Account')
-    default_cash_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Cash Account')
-    default_receivable_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Receivable Account')
-    round_off_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Round Off Account')
-    round_off_cost_center = models.ForeignKey('Cost Center', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Round Off Cost Center')
-    write_off_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Write Off Account')
-    exchange_gain_loss_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Exchange Gain / Loss Account')
-    unrealized_exchange_gain_loss_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Unrealized Exchange Gain/Loss Account')
-    allow_account_creation_against_child_company = models.BooleanField(default=False, verbose_name='Allow Account Creation Against Child Company')
-    default_payable_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Payable Account')
-    default_expense_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Cost of Goods Sold Account')
-    default_income_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Income Account')
-    default_deferred_revenue_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Deferred Revenue Account')
-    default_deferred_expense_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Deferred Expense Account')
-    cost_center = models.ForeignKey('Cost Center', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Cost Center')
-    credit_limit = models.DecimalField(max_digits=18, decimal_places=6, default=0.0, verbose_name='Credit Limit')
-    payment_terms = models.ForeignKey('Payment Terms Template', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Payment Terms Template')
-    enable_perpetual_inventory = models.BooleanField(default=False, verbose_name='Enable Perpetual Inventory')
-    default_inventory_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Inventory Account')
-    stock_adjustment_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Stock Adjustment Account')
-    stock_received_but_not_billed = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Stock Received But Not Billed')
-    accumulated_depreciation_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Accumulated Depreciation Account')
-    depreciation_expense_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Depreciation Expense Account')
-    series_for_depreciation_entry = models.CharField(max_length=255, blank=True, null=True, verbose_name='Series for Asset Depreciation Entry (Journal Entry)')
-    disposal_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Gain/Loss Account on Asset Disposal')
-    depreciation_cost_center = models.ForeignKey('Cost Center', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Asset Depreciation Cost Center')
-    capital_work_in_progress_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Capital Work In Progress Account')
-    asset_received_but_not_billed = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Asset Received But Not Billed')
-    exception_budget_approver_role = models.ForeignKey('Role', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Exception Budget Approver Role')
-    date_of_incorporation = models.DateField(blank=True, null=True, verbose_name='Date of Incorporation')
-    address_html = models.TextField(blank=True, null=True, verbose_name='address_html')
-    date_of_commencement = models.DateField(blank=True, null=True, verbose_name='Date of Commencement')
-    phone_no = models.CharField(max_length=255, blank=True, null=True, verbose_name='Phone No')
-    fax = models.CharField(max_length=255, blank=True, null=True, verbose_name='Fax')
-    email = models.CharField(max_length=255, blank=True, null=True, verbose_name='Email')
-    website = models.CharField(max_length=255, blank=True, null=True, verbose_name='Website')
-    registration_details = models.TextField(blank=True, null=True, verbose_name='Registration Details')
-    lft = models.IntegerField(default=0, verbose_name='Lft')
-    rgt = models.IntegerField(default=0, verbose_name='Rgt')
-    old_parent = models.CharField(max_length=255, blank=True, null=True, verbose_name='old_parent')
-    default_selling_terms = models.ForeignKey('Terms and Conditions', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Selling Terms')
-    default_buying_terms = models.ForeignKey('Terms and Conditions', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Buying Terms')
-    default_in_transit_warehouse = models.ForeignKey('Warehouse', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default In-Transit Warehouse')
-    unrealized_profit_loss_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Unrealized Profit / Loss Account')
-    default_discount_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Payment Discount Account')
-    enable_provisional_accounting_for_non_stock_items = models.BooleanField(default=False, verbose_name='Enable Provisional Accounting For Non Stock Items')
-    default_provisional_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Provisional Account')
-    default_advance_received_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Advance Received Account')
-    default_advance_paid_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Advance Paid Account')
-    book_advance_payments_in_separate_party_account = models.BooleanField(default=False, verbose_name='Book Advance Payments in Separate Party Account')
-    auto_exchange_rate_revaluation = models.BooleanField(default=False, verbose_name='Auto Create Exchange Rate Revaluation')
-    auto_err_frequency = models.CharField(max_length=255, choices=[('Daily', 'Daily'), ('Weekly', 'Weekly'), ('Monthly', 'Monthly')], blank=True, null=True, verbose_name='Frequency')
-    submit_err_jv = models.BooleanField(default=False, verbose_name='Submit ERR Journals?')
-    reconcile_on_advance_payment_date = models.BooleanField(default=False, verbose_name='Reconcile on Advance Payment Date')
-    default_operating_cost_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Operating Cost Account')
-    round_off_for_opening = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Round Off for Opening')
-    reconciliation_takes_effect_on = models.CharField(max_length=255, choices=[('Advance Payment Date', 'Advance Payment Date'), ('Oldest Of Invoice Or Advance', 'Oldest Of Invoice Or Advance'), ('Reconciliation Date', 'Reconciliation Date')], blank=True, null=True, verbose_name='Reconciliation Takes Effect On')
-    reporting_currency = models.ForeignKey('Currency', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Reporting Currency')
-    purchase_expense_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Purchase Expense Account')
-    purchase_expense_contra_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Purchase Expense Contra Account')
-    service_expense_account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Service Expense Account')
-    enable_item_wise_inventory_account = models.BooleanField(default=False, verbose_name='Enable Item-wise Inventory Account')
-    valuation_method = models.CharField(max_length=255, choices=[('FIFO', 'FIFO'), ('Moving Average', 'Moving Average'), ('LIFO', 'LIFO')], blank=True, null=True, verbose_name='Default Stock Valuation Method')
-    default_wip_warehouse = models.ForeignKey('Warehouse', on_delete=models.SET_NULL, blank=True, null=True, verbose_name=' Default Work In Progress Warehouse ')
-    default_fg_warehouse = models.ForeignKey('Warehouse', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Finished Goods Warehouse')
-    default_scrap_warehouse = models.ForeignKey('Warehouse', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Scrap Warehouse')
-    default_sales_contact = models.ForeignKey('Contact', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Sales Contact')
-    accounts_frozen_till_date = models.DateField(blank=True, null=True, verbose_name='Accounts Frozen Till Date')
-    role_allowed_for_frozen_entries = models.ForeignKey('Role', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Roles Allowed to Set and Edit Frozen Account Entries')
+    # Minimal fields for migration; extend later as needed
 
-class Account(BaseDocument):
+class BankAccountSubtype(BaseDocument):
+    name = models.CharField(max_length=255, unique=True, verbose_name='Bank Account Subtype')
+
+class BankAccountType(BaseDocument):
+    name = models.CharField(max_length=255, unique=True, verbose_name='Bank Account Type')
+
+class BankStatementImportLogColumnMap(BaseDocument):
+    # Placeholder for column mapping details
+    mapping = models.JSONField(default=dict, blank=True, null=True, verbose_name='Column Mapping')
+
     account_name = models.CharField(max_length=255, blank=True, null=True, verbose_name='Account Name')
     account_number = models.CharField(max_length=255, blank=True, null=True, verbose_name='Account Number')
     is_group = models.BooleanField(default=False, verbose_name='Is Group')
@@ -151,7 +85,7 @@ class Account(BaseDocument):
     root_type = models.CharField(max_length=255, choices=[('Asset', 'Asset'), ('Liability', 'Liability'), ('Income', 'Income'), ('Expense', 'Expense'), ('Equity', 'Equity')], blank=True, null=True, verbose_name='Root Type')
     report_type = models.CharField(max_length=255, choices=[('Balance Sheet', 'Balance Sheet'), ('Profit and Loss', 'Profit and Loss')], blank=True, null=True, verbose_name='Report Type')
     account_currency = models.ForeignKey('Currency', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Currency')
-    parent_account = models.ForeignKey('self', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Parent Account')
+    exception_budget_approver_role = models.ForeignKey('Role', on_delete=models.SET_NULL, blank=True, null=True, related_name='company_exception_budget_roles', verbose_name='Exception Budget Approver Role')
     account_type = models.CharField(max_length=255, choices=[('Accumulated Depreciation', 'Accumulated Depreciation'), ('Asset Received But Not Billed', 'Asset Received But Not Billed'), ('Bank', 'Bank'), ('Cash', 'Cash'), ('Chargeable', 'Chargeable'), ('Capital Work in Progress', 'Capital Work in Progress'), ('Cost of Goods Sold', 'Cost of Goods Sold'), ('Current Asset', 'Current Asset'), ('Current Liability', 'Current Liability'), ('Depreciation', 'Depreciation'), ('Direct Expense', 'Direct Expense'), ('Direct Income', 'Direct Income'), ('Equity', 'Equity'), ('Expense Account', 'Expense Account'), ('Expenses Included In Asset Valuation', 'Expenses Included In Asset Valuation'), ('Expenses Included In Valuation', 'Expenses Included In Valuation'), ('Fixed Asset', 'Fixed Asset'), ('Income Account', 'Income Account'), ('Indirect Expense', 'Indirect Expense'), ('Indirect Income', 'Indirect Income'), ('Liability', 'Liability'), ('Payable', 'Payable'), ('Receivable', 'Receivable'), ('Round Off', 'Round Off'), ('Round Off for Opening', 'Round Off for Opening'), ('Stock', 'Stock'), ('Stock Adjustment', 'Stock Adjustment'), ('Stock Received But Not Billed', 'Stock Received But Not Billed'), ('Service Received But Not Billed', 'Service Received But Not Billed'), ('Tax', 'Tax'), ('Temporary', 'Temporary')], blank=True, null=True, verbose_name='Account Type')
     tax_rate = models.FloatField(default=0.0, verbose_name='Tax Rate')
     freeze_account = models.CharField(max_length=255, choices=[('No', 'No'), ('Yes', 'Yes')], blank=True, null=True, verbose_name='Frozen')
@@ -161,7 +95,7 @@ class Account(BaseDocument):
     old_parent = models.CharField(max_length=255, blank=True, null=True, verbose_name='Old Parent')
     include_in_gross = models.BooleanField(default=False, verbose_name='Include in gross')
     disabled = models.BooleanField(default=False, verbose_name='Disable')
-    account_category = models.ForeignKey('Account Category', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Account Category')
+    account_category = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Account Category')
 
     def clean(self):
         super().clean()
@@ -175,3 +109,226 @@ class Account(BaseDocument):
                 raise ValidationError(f"Parent account {self.parent_account.name} can not be a ledger")
             if self.parent_account.company != self.company:
                 raise ValidationError(f"Parent account {self.parent_account.name} does not belong to company: {self.company}")
+class Bank(BaseDocument):
+    bank_name = models.CharField(max_length=255, unique=True, verbose_name='Bank Name')
+    swift_number = models.CharField(max_length=255, unique=True, blank=True, null=True, verbose_name='SWIFT number')
+    website = models.URLField(max_length=255, blank=True, null=True, verbose_name='Website')
+    address_html = models.TextField(blank=True, null=True, verbose_name='Address HTML')
+    contact_html = models.TextField(blank=True, null=True, verbose_name='Contact HTML')
+    plaid_access_token = models.CharField(max_length=255, blank=True, null=True, verbose_name='Plaid Access Token', editable=False)
+
+class BankAccount(BaseDocument):
+    account_name = models.CharField(max_length=255, blank=True, null=True, verbose_name='Account Name')
+    account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Company Account')
+    bank = models.ForeignKey('Bank', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Bank')
+    account_type = models.ForeignKey('BankAccountType', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Account Type')
+    account_subtype = models.ForeignKey('BankAccountSubtype', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Account Subtype')
+    is_default = models.BooleanField(default=False, verbose_name='Is Default Account')
+    is_company_account = models.BooleanField(default=False, verbose_name='Is Company Account')
+    company = models.ForeignKey('Company', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Company')
+    disabled = models.BooleanField(default=False, verbose_name='Disabled')
+    is_credit_card = models.BooleanField(default=False, verbose_name='Is Credit Card')
+    party_type = models.CharField(max_length=255, blank=True, null=True, verbose_name='Party Type')
+    party = models.CharField(max_length=255, blank=True, null=True, verbose_name='Party')
+    address_html = models.TextField(blank=True, null=True, verbose_name='Address HTML')
+    contact_html = models.TextField(blank=True, null=True, verbose_name='Contact HTML')
+    integration_id = models.CharField(max_length=255, blank=True, null=True, verbose_name='Integration ID', editable=False)
+    last_integration_date = models.DateField(blank=True, null=True, verbose_name='Last Integration Date')
+    mask = models.CharField(max_length=255, blank=True, null=True, verbose_name='Mask', editable=False)
+    branch_code = models.CharField(max_length=255, blank=True, null=True, verbose_name='Branch Code')
+    bank_account_no = models.CharField(max_length=255, blank=True, null=True, verbose_name='Bank Account No')
+
+class BankStatementImportLog(BaseDocument):
+    bank_account = models.ForeignKey('BankAccount', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Bank Account')
+    file = models.FileField(upload_to='bank_statements/', verbose_name='File')
+    STATUS_CHOICES = [
+        ('Not Started', 'Not Started'),
+        ('Completed', 'Completed'),
+    ]
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Not Started', verbose_name='Status')
+    currency = models.ForeignKey('Currency', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Currency')
+    number_of_transactions = models.PositiveIntegerField(default=0, verbose_name='Number of Transactions')
+    closing_balance = models.DecimalField(max_digits=18, decimal_places=2, blank=True, null=True, verbose_name='Closing Balance')
+    start_date = models.DateField(blank=True, null=True, verbose_name='Start Date')
+    end_date = models.DateField(blank=True, null=True, verbose_name='End Date')
+    total_debits = models.DecimalField(max_digits=18, decimal_places=2, default=0, verbose_name='Total Debits')
+    total_credits = models.DecimalField(max_digits=18, decimal_places=2, default=0, verbose_name='Total Credits')
+    total_debit_transactions = models.PositiveIntegerField(default=0, verbose_name='Total Debit Transactions')
+    total_credit_transactions = models.PositiveIntegerField(default=0, verbose_name='Total Credit Transactions')
+
+    # Additional fields for statement format detection could be added as needed
+
+# =====================================================================
+# BATCH 1: CRM & SALES
+# =====================================================================
+
+class Customer(BaseDocument):
+    customer_name = models.CharField(max_length=255, verbose_name='Customer Name')
+    customer_group = models.CharField(max_length=255, blank=True, null=True, verbose_name='Customer Group')
+    territory = models.CharField(max_length=255, blank=True, null=True, verbose_name='Territory')
+    account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Account')
+
+class Lead(BaseDocument):
+    lead_name = models.CharField(max_length=255, verbose_name='Lead Name')
+    company_name = models.CharField(max_length=255, blank=True, null=True, verbose_name='Company Name')
+    email_id = models.EmailField(blank=True, null=True, verbose_name='Email Id')
+    mobile_no = models.CharField(max_length=50, blank=True, null=True, verbose_name='Mobile No')
+    status = models.CharField(max_length=50, default='Lead', verbose_name='Status')
+
+class Opportunity(BaseDocument):
+    opportunity_from = models.CharField(max_length=255, choices=[('Lead', 'Lead'), ('Customer', 'Customer')], default='Lead', verbose_name='Opportunity From')
+    party_name = models.CharField(max_length=255, blank=True, null=True, verbose_name='Party Name')
+    opportunity_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0, verbose_name='Opportunity Amount')
+    status = models.CharField(max_length=50, default='Open', verbose_name='Status')
+
+class Quotation(BaseDocument):
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Customer')
+    transaction_date = models.DateField(auto_now_add=True, verbose_name='Date')
+    valid_till = models.DateField(blank=True, null=True, verbose_name='Valid Till')
+    total = models.DecimalField(max_digits=18, decimal_places=2, default=0, verbose_name='Total')
+    status = models.CharField(max_length=50, default='Draft', verbose_name='Status')
+
+class SalesOrder(BaseDocument):
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Customer')
+    transaction_date = models.DateField(auto_now_add=True, verbose_name='Date')
+    delivery_date = models.DateField(blank=True, null=True, verbose_name='Delivery Date')
+    total = models.DecimalField(max_digits=18, decimal_places=2, default=0, verbose_name='Total')
+    status = models.CharField(max_length=50, default='Draft', verbose_name='Status')
+
+class SalesInvoice(BaseDocument):
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Customer')
+    posting_date = models.DateField(auto_now_add=True, verbose_name='Posting Date')
+    due_date = models.DateField(blank=True, null=True, verbose_name='Due Date')
+    total = models.DecimalField(max_digits=18, decimal_places=2, default=0, verbose_name='Total')
+    status = models.CharField(max_length=50, default='Draft', verbose_name='Status')
+
+# =====================================================================
+# BATCH 1: PURCHASE & INVENTORY
+# =====================================================================
+
+class Supplier(BaseDocument):
+    supplier_name = models.CharField(max_length=255, verbose_name='Supplier Name')
+    supplier_group = models.CharField(max_length=255, blank=True, null=True, verbose_name='Supplier Group')
+    account = models.ForeignKey('Account', on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Default Account')
+
+class Item(BaseDocument):
+    item_code = models.CharField(max_length=255, unique=True, verbose_name='Item Code')
+    item_name = models.CharField(max_length=255, verbose_name='Item Name')
+    item_group = models.CharField(max_length=255, blank=True, null=True, verbose_name='Item Group')
+    stock_uom = models.CharField(max_length=50, default='Nos', verbose_name='Default Unit of Measure')
+    standard_rate = models.DecimalField(max_digits=18, decimal_places=2, default=0, verbose_name='Standard Rate')
+
+class PurchaseOrder(BaseDocument):
+    supplier = models.ForeignKey(Supplier, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Supplier')
+    transaction_date = models.DateField(auto_now_add=True, verbose_name='Date')
+    schedule_date = models.DateField(blank=True, null=True, verbose_name='Reqd by Date')
+    total = models.DecimalField(max_digits=18, decimal_places=2, default=0, verbose_name='Total')
+    status = models.CharField(max_length=50, default='Draft', verbose_name='Status')
+
+class PurchaseInvoice(BaseDocument):
+    supplier = models.ForeignKey(Supplier, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Supplier')
+    posting_date = models.DateField(auto_now_add=True, verbose_name='Posting Date')
+    due_date = models.DateField(blank=True, null=True, verbose_name='Due Date')
+    total = models.DecimalField(max_digits=18, decimal_places=2, default=0, verbose_name='Total')
+    status = models.CharField(max_length=50, default='Draft', verbose_name='Status')
+
+# =====================================================================
+# BATCH 2: HR & PAYROLL
+# =====================================================================
+
+class Employee(BaseDocument):
+    first_name = models.CharField(max_length=255, verbose_name='First Name')
+    last_name = models.CharField(max_length=255, blank=True, null=True, verbose_name='Last Name')
+    gender = models.CharField(max_length=50, choices=[('Male', 'Male'), ('Female', 'Female'), ('Other', 'Other')], blank=True, null=True, verbose_name='Gender')
+    date_of_birth = models.DateField(blank=True, null=True, verbose_name='Date of Birth')
+    date_of_joining = models.DateField(blank=True, null=True, verbose_name='Date of Joining')
+    department = models.CharField(max_length=255, blank=True, null=True, verbose_name='Department')
+    designation = models.CharField(max_length=255, blank=True, null=True, verbose_name='Designation')
+    status = models.CharField(max_length=50, default='Active', verbose_name='Status')
+
+class Attendance(BaseDocument):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, verbose_name='Employee')
+    attendance_date = models.DateField(verbose_name='Attendance Date')
+    status = models.CharField(max_length=50, choices=[('Present', 'Present'), ('Absent', 'Absent'), ('Half Day', 'Half Day'), ('On Leave', 'On Leave')], verbose_name='Status')
+
+class LeaveApplication(BaseDocument):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, verbose_name='Employee')
+    leave_type = models.CharField(max_length=255, verbose_name='Leave Type')
+    from_date = models.DateField(verbose_name='From Date')
+    to_date = models.DateField(verbose_name='To Date')
+    status = models.CharField(max_length=50, default='Open', verbose_name='Status')
+
+class SalarySlip(BaseDocument):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, verbose_name='Employee')
+    start_date = models.DateField(verbose_name='Start Date')
+    end_date = models.DateField(verbose_name='End Date')
+    gross_pay = models.DecimalField(max_digits=18, decimal_places=2, default=0, verbose_name='Gross Pay')
+    total_deduction = models.DecimalField(max_digits=18, decimal_places=2, default=0, verbose_name='Total Deduction')
+    net_pay = models.DecimalField(max_digits=18, decimal_places=2, default=0, verbose_name='Net Pay')
+    status = models.CharField(max_length=50, default='Draft', verbose_name='Status')
+
+# =====================================================================
+# BATCH 2: MANUFACTURING & PROJECTS
+# =====================================================================
+
+class BOM(BaseDocument):
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, verbose_name='Item')
+    quantity = models.DecimalField(max_digits=18, decimal_places=2, default=1, verbose_name='Quantity')
+    is_active = models.BooleanField(default=True, verbose_name='Is Active')
+    is_default = models.BooleanField(default=False, verbose_name='Is Default')
+
+class WorkOrder(BaseDocument):
+    production_item = models.ForeignKey(Item, on_delete=models.CASCADE, verbose_name='Production Item')
+    bom_no = models.ForeignKey(BOM, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='BOM')
+    qty = models.DecimalField(max_digits=18, decimal_places=2, default=1, verbose_name='Qty to Manufacture')
+    planned_start_date = models.DateTimeField(blank=True, null=True, verbose_name='Planned Start Date')
+    status = models.CharField(max_length=50, default='Draft', verbose_name='Status')
+
+class ProductionPlan(BaseDocument):
+    posting_date = models.DateField(auto_now_add=True, verbose_name='Date')
+    status = models.CharField(max_length=50, default='Draft', verbose_name='Status')
+
+class Project(BaseDocument):
+    project_name = models.CharField(max_length=255, verbose_name='Project Name')
+    status = models.CharField(max_length=50, default='Open', verbose_name='Status')
+    expected_start_date = models.DateField(blank=True, null=True, verbose_name='Expected Start Date')
+    expected_end_date = models.DateField(blank=True, null=True, verbose_name='Expected End Date')
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Customer')
+
+class Task(BaseDocument):
+    subject = models.CharField(max_length=255, verbose_name='Subject')
+    project = models.ForeignKey(Project, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Project')
+    status = models.CharField(max_length=50, default='Open', verbose_name='Status')
+    exp_start_date = models.DateField(blank=True, null=True, verbose_name='Expected Start Date')
+    exp_end_date = models.DateField(blank=True, null=True, verbose_name='Expected End Date')
+
+class Timesheet(BaseDocument):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, verbose_name='Employee')
+    status = models.CharField(max_length=50, default='Draft', verbose_name='Status')
+    total_hours = models.DecimalField(max_digits=18, decimal_places=2, default=0, verbose_name='Total Hours')
+
+# =====================================================================
+# BATCH 2: ASSETS & SUPPORT
+# =====================================================================
+
+class Asset(BaseDocument):
+    asset_name = models.CharField(max_length=255, verbose_name='Asset Name')
+    item_code = models.ForeignKey(Item, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Item Code')
+    status = models.CharField(max_length=50, default='Draft', verbose_name='Status')
+    purchase_date = models.DateField(blank=True, null=True, verbose_name='Purchase Date')
+    gross_purchase_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0, verbose_name='Gross Purchase Amount')
+
+class AssetDepreciationSchedule(BaseDocument):
+    asset = models.ForeignKey(Asset, on_delete=models.CASCADE, verbose_name='Asset')
+    schedule_date = models.DateField(verbose_name='Schedule Date')
+    depreciation_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0, verbose_name='Depreciation Amount')
+
+class Issue(BaseDocument):
+    subject = models.CharField(max_length=255, verbose_name='Subject')
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='Customer')
+    status = models.CharField(max_length=50, default='Open', verbose_name='Status')
+    priority = models.CharField(max_length=50, default='Medium', verbose_name='Priority')
+
+class ServiceLevelAgreement(BaseDocument):
+    sla_name = models.CharField(max_length=255, verbose_name='SLA Name')
+    default_priority = models.CharField(max_length=50, default='Medium', verbose_name='Default Priority')

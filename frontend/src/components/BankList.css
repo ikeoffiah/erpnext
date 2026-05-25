@@ -1,0 +1,67 @@
+/* src/components/BankList.css */
+
+:root {
+  --bg-color: hsl(210, 10%, 10%);
+  --card-bg: hsl(210, 10%, 14%);
+  --accent: hsl(220, 90%, 60%);
+  --text-primary: hsl(0, 0%, 95%);
+  --text-secondary: hsl(0, 0%, 70%);
+}
+
+.bank-list {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: var(--text-primary);
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.bank-list__title {
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  color: var(--accent);
+}
+
+.bank-list__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.bank-list__item {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 1.2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.bank-list__item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.bank-list__name {
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+  color: var(--accent);
+}
+
+.bank-list__detail {
+  font-size: 0.95rem;
+  margin: 0.3rem 0;
+  color: var(--text-secondary);
+}
+
+.bank-list.loading,
+.bank-list.error {
+  text-align: center;
+  font-size: 1.2rem;
+  padding: 2rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
